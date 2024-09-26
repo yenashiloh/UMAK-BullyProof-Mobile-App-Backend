@@ -17,25 +17,23 @@ exports.login = async (req, res, next) => {
         const { email, password } = req.body;
 
         const user = await UserService.checkuser(email);
-        
+
         if (!user) {
-            throw new Error('User dont exist');
+            return res.status(404).json({ status: false, message: "User doesn't exist" });
         }
 
         const isMatch = await user.comparePassword(password);
 
-        if (isMatch == false) {
-            throw new Error('Password Invalid');
+        if (!isMatch) {
+            return res.status(401).json({ status: false, message: "Invalid password" });
         }
 
         let tokenData = { _id: user._id, email: user.email };
 
-        const token = await UserService.generateAccessToken(tokenData, "secret", "1h")
+        const token = await UserService.generateAccessToken(tokenData, process.env.JWT_SECRET, process.env.JWT_EXPIRE);
 
-        res.status(200).json({ status: true, token: token })
-
+        res.status(200).json({ status: true, token: token });
     } catch (error) {
-        throw error
         next(error);
     }
-}
+};
