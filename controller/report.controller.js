@@ -2,13 +2,28 @@ const ReportService = require('../services/report.services');
 
 exports.submitReport = async (req, res, next) => {
     try {
-        const { victimName, victimType, gradeYearLevel } = req.body;
+        const {
+            victimName, victimType, gradeYearLevel, victimRelationship, hasReportedBefore,
+            reportedTo, platformUsed, cyberbullyingType, incidentDetails, perpetratorName,
+            perpetratorRole, perpetratorGradeYearLevel, actionsTaken, describeActions
+        } = req.body;
 
         const reportData = {
             victimName,
             victimType,
             gradeYearLevel,
-            reportedBy: req.user._id // Assuming the user is authenticated and req.user contains their ID
+            victimRelationship,
+            hasReportedBefore,
+            reportedTo,
+            platformUsed,
+            cyberbullyingType,
+            incidentDetails,
+            perpetratorName,
+            perpetratorRole,
+            perpetratorGradeYearLevel,
+            actionsTaken,
+            describeActions,
+            reportedBy: req.user._id // Assuming the user is authenticated
         };
 
         const report = await ReportService.createReport(reportData);

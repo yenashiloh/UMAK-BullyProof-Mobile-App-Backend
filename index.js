@@ -4,10 +4,10 @@ const UserModel = require('./model/user.model')
 
 const port = 3000;
 
-app.get('/', (req, res)=> {
+app.get('/', (req, res) => {
     res.send("/");
 });
 
-app.listen(port, ()=> {
-    console.log("Server Listening on Port http://localhost:" + port);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server Listening on Port http://192.168.1.12:${port}`);
 });
