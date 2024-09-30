@@ -68,6 +68,10 @@ const reportSchema = new Schema({
     reportDate: {
         type: Date,
         default: Date.now
+    },
+    status: {
+        type: String,
+        default: 'To Review'
     }
 });
 

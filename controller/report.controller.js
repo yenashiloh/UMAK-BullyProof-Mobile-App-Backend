@@ -23,7 +23,8 @@ exports.submitReport = async (req, res, next) => {
             perpetratorGradeYearLevel,
             actionsTaken,
             describeActions,
-            reportedBy: req.user._id // Assuming the user is authenticated
+            reportedBy: req.user._id,
+            status: 'To Review'
         };
 
         const report = await ReportService.createReport(reportData);
