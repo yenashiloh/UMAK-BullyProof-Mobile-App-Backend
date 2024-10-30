@@ -4,13 +4,19 @@ exports.register = async (req, res, next) => {
     try {
         const { fullname, email, contact, password, type } = req.body;
 
+        const existingUser = await UserService.checkuser(email);
+        if (existingUser) {
+            return res.status(400).json({ status: false, message: "Email already in use, Please use another email." });
+        }
+
         const successRes = await UserService.registerUser(fullname, email, contact, password, type);
 
         res.json({ status: true, success: "User Registered Successfully" });
     } catch (error) {
-        throw error
+        next(error);
     }
 }
+
 
 exports.login = async (req, res, next) => {
     try {

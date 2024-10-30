@@ -40,6 +40,10 @@ const reportSchema = new Schema({
         type: String,
         required: true
     },
+    incidentEvidence: {
+        type: [String],
+        required: false
+    },
     perpetratorName: {
         type: String,
         required: true
@@ -52,13 +56,17 @@ const reportSchema = new Schema({
         type: String,
         required: true
     },
+    supportTypes: {
+        type: [String],
+        required: true
+    },
     actionsTaken: {
         type: String,
         required: true
     },
     describeActions: {
         type: String,
-        required: true
+        required: false
     },
     reportedBy: {
         type: mongoose.Schema.Types.ObjectId,
