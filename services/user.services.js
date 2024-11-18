@@ -11,7 +11,6 @@ class UserService {
         }
     }
 
-
     static async checkuser(email) {
         try {
             return await UserModel.findOne({ email });
@@ -22,6 +21,15 @@ class UserService {
 
     static async generateAccessToken(tokenData,JWTSecret_Key,JWT_EXPIRE){
         return jwt.sign(tokenData, JWTSecret_Key, { expiresIn: JWT_EXPIRE });
+    }
+
+    static async getUserById(userId) {
+        try {
+            // Find the user by userId
+            return await UserModel.findById(userId);
+        } catch (error) {
+            throw error;
+        }
     }
 }
 

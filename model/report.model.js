@@ -79,7 +79,7 @@ const reportSchema = new Schema({
     },
     status: {
         type: String,
-        default: 'To Review'
+        default: 'For Review'
     }
 });
 

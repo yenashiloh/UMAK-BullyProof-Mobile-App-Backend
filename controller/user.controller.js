@@ -43,3 +43,22 @@ exports.login = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.getUserById = async (req, res, next) => {
+    try {
+        const { userId } = req.params; // Extract userId from URL params
+
+        // Call service method to check if user exists
+        const user = await UserService.getUserById(userId);
+
+        if (!user) {
+            return res.status(404).json({ status: false, message: "User not found" });
+        }
+
+        // Return a success response if user found
+        res.status(200).json({ status: true, message: "User found", user });
+    } catch (error) {
+        next(error);
+    }
+};
+
