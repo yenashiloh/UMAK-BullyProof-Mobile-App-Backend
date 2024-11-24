@@ -7,13 +7,12 @@ const reportRouter = require('./routers/report.router');
 
 const app = express();
 
-// Enable CORS for all routes
 app.use(cors());
 
-// Body parser middleware
-app.use(body_parser.json());
+const MAX_REQUEST_SIZE = '25mb';
+app.use(body_parser.json({ limit: MAX_REQUEST_SIZE }));
+app.use(body_parser.urlencoded({ limit: MAX_REQUEST_SIZE, extended: true }));
 
-// Use your userRouter
 app.use('/', userRouter);
 
 app.use('/reports', reportRouter);
