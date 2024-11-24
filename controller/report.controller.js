@@ -4,9 +4,9 @@ exports.submitReport = async (req, res, next) => {
     try {
         const {
             victimName, victimType, gradeYearLevel, victimRelationship, hasReportedBefore,
-            reportedTo, platformUsed, cyberbullyingType, incidentDetails, incidentEvidence,
-            perpetratorName, perpetratorRole, perpetratorGradeYearLevel, supportTypes,
-            actionsTaken, describeActions
+            departmentCollege, reportedTo, platformUsed, hasWitness, witnessInfo,
+            incidentDetails, incidentEvidence, perpetratorName, perpetratorRole,
+            perpetratorGradeYearLevel, supportTypes, actionsTaken, describeActions
         } = req.body;
 
         const reportData = {
@@ -15,9 +15,11 @@ exports.submitReport = async (req, res, next) => {
             gradeYearLevel,
             victimRelationship,
             hasReportedBefore,
+            departmentCollege,
             reportedTo,
             platformUsed,
-            cyberbullyingType,
+            hasWitness,
+            witnessInfo,
             incidentDetails,
             incidentEvidence,
             perpetratorName,

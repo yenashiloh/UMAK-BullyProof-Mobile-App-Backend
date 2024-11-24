@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const db = require('../config/db');
+const moment = require('moment-timezone');
 
 const { Schema } = mongoose;
 
@@ -24,6 +25,10 @@ const reportSchema = new Schema({
         type: String,
         required: true
     },
+    departmentCollege: {
+        type: String,
+        required: true
+    },
     reportedTo: {
         type: String,
         required: false
@@ -32,9 +37,17 @@ const reportSchema = new Schema({
         type: [String],
         required: true
     },
-    cyberbullyingType: {
-        type: [String],
+    // cyberbullyingType: {
+    //     type: [String],
+    //     required: true
+    // },
+    hasWitness: {
+        type: String,
         required: true
+    },
+    witnessInfo: {
+        type: String,
+        required: false
     },
     incidentDetails: {
         type: String,
@@ -75,7 +88,7 @@ const reportSchema = new Schema({
     },
     reportDate: {
         type: Date,
-        default: Date.now
+        default: () => moment().tz('Asia/Manila').toDate()
     },
     status: {
         type: String,
