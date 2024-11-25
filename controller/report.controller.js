@@ -3,29 +3,37 @@ const ReportService = require('../services/report.services');
 exports.submitReport = async (req, res, next) => {
     try {
         const {
-            victimName, victimType, gradeYearLevel, victimRelationship, hasReportedBefore,
-            departmentCollege, reportedTo, platformUsed, hasWitness, witnessInfo,
-            incidentDetails, incidentEvidence, perpetratorName, perpetratorRole,
-            perpetratorGradeYearLevel, supportTypes, actionsTaken, describeActions
+            victimName, victimType, otherVictimType, gradeYearLevel, otherGradeYearLevel,
+            victimRelationship, otherVictimRelationship, hasReportedBefore, departmentCollege,
+            reportedTo, platformUsed, otherPlatformUsed, hasWitness, witnessInfo, incidentDetails,
+            incidentEvidence, perpetratorName, perpetratorRole, otherPerpetratorRole, perpetratorGradeYearLevel,
+            otherPerpetratorGradeYearLevel, supportTypes, otherSupportTypes, actionsTaken, describeActions
         } = req.body;
 
         const reportData = {
             victimName,
             victimType,
+            otherVictimType,
             gradeYearLevel,
+            otherGradeYearLevel,
             victimRelationship,
+            otherVictimRelationship,
             hasReportedBefore,
             departmentCollege,
             reportedTo,
             platformUsed,
+            otherPlatformUsed,
             hasWitness,
             witnessInfo,
             incidentDetails,
             incidentEvidence,
             perpetratorName,
             perpetratorRole,
+            otherPerpetratorRole,
             perpetratorGradeYearLevel,
+            otherPerpetratorGradeYearLevel,
             supportTypes,
+            otherSupportTypes,
             actionsTaken,
             describeActions,
             reportedBy: req.user._id,

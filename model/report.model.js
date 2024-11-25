@@ -9,6 +9,10 @@ const reportSchema = new Schema({
         type: String,
         required: true
     },
+    otherVictimRelationship: {
+        type: String,
+        required: false
+    },
     victimName: {
         type: String,
         required: true
@@ -17,9 +21,17 @@ const reportSchema = new Schema({
         type: String,
         required: true
     },
+    otherVictimType: {
+        type: String,
+        required: false
+    },
     gradeYearLevel: {
         type: String,
         required: true
+    },
+    otherGradeYearLevel: {
+        type: String,
+        required: false
     },
     hasReportedBefore: {
         type: String,
@@ -27,7 +39,7 @@ const reportSchema = new Schema({
     },
     departmentCollege: {
         type: String,
-        required: true
+        required: false
     },
     reportedTo: {
         type: String,
@@ -37,10 +49,10 @@ const reportSchema = new Schema({
         type: [String],
         required: true
     },
-    // cyberbullyingType: {
-    //     type: [String],
-    //     required: true
-    // },
+    otherPlatformUsed: {
+        type: String,
+        required: false
+    },
     hasWitness: {
         type: String,
         required: true
@@ -55,7 +67,7 @@ const reportSchema = new Schema({
     },
     incidentEvidence: {
         type: [String],
-        required: false
+        required: true
     },
     perpetratorName: {
         type: String,
@@ -65,13 +77,25 @@ const reportSchema = new Schema({
         type: String,
         required: true
     },
+    otherPerpetratorRole: {
+        type: String,
+        required: false
+    },
     perpetratorGradeYearLevel: {
         type: String,
         required: true
     },
+    otherPerpetratorGradeYearLevel: {
+        type: String,
+        required: false
+    },
     supportTypes: {
         type: [String],
         required: true
+    },
+    otherSupportTypes: {
+        type: String,
+        required: false
     },
     actionsTaken: {
         type: String,
