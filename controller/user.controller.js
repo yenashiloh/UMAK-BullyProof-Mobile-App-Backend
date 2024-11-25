@@ -34,7 +34,7 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ status: false, message: "Invalid password" });
         }
 
-        let tokenData = { _id: user._id, email: user.email };
+        let tokenData = { _id: user._id, email: user.email};
 
         const token = await UserService.generateAccessToken(tokenData, process.env.JWT_SECRET, process.env.JWT_EXPIRE);
 

@@ -8,15 +8,12 @@ const notificationRouter = require('./routers/notification.router');
 
 const app = express();
 
-// Enable CORS for all routes
 app.use(cors());
 
-// Body parser middleware with a size limit
-const MAX_REQUEST_SIZE = '25mb'; // Set your desired limit
+const MAX_REQUEST_SIZE = '25mb';
 app.use(body_parser.json({ limit: MAX_REQUEST_SIZE }));
 app.use(body_parser.urlencoded({ limit: MAX_REQUEST_SIZE, extended: true }));
 
-// Use your userRouter
 app.use('/', userRouter);
 
 app.use('/reports', reportRouter);
