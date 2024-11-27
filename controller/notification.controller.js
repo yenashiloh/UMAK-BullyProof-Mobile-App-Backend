@@ -35,11 +35,11 @@ const markNotificationAsRead = async (req, res) => {
 
         const result = await notifications.updateOne(
             { _id: new Types.ObjectId(notificationId) },
-            { 
-                $set: { 
-                    status: 'read', 
-                    readAt: new Date() 
-                } 
+            {
+                $set: {
+                    status: 'read',
+                    readAt: new Date()
+                }
             }
         );
 
@@ -70,15 +70,14 @@ const markAllNotificationsAsRead = async (req, res) => {
         const notifications = db.collection('notifications');
 
         const result = await notifications.updateMany(
-            { 
-                userId: new Types.ObjectId(userId), 
-                status: 'unread' 
+            {
+                userId: new Types.ObjectId(userId)
             },
-            { 
-                $set: { 
-                    status: 'read', 
-                    readAt: new Date() 
-                } 
+            {
+                $set: {
+                    status: 'read',
+                    readAt: new Date()
+                }
             }
         );
 
@@ -101,8 +100,8 @@ const deleteNotification = async (req, res) => {
         const { notificationId } = req.params;
         const notifications = db.collection('notifications');
 
-        const result = await notifications.deleteOne({ 
-            _id: new Types.ObjectId(notificationId) 
+        const result = await notifications.deleteOne({
+            _id: new Types.ObjectId(notificationId)
         });
 
         if (result.deletedCount === 0) {
