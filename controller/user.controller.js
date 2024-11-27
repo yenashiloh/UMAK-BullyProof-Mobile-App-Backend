@@ -35,7 +35,7 @@ exports.login = async (req, res, next) => {
         }
 
         if (user.status === "Disabled Account") {
-            return res.status(401).json({ status: false, message: "Account Disabled" });
+            return res.status(401).json({ status: false, message: "Your account has been disabled due to certain reasons. Please contact CSFD for assistance" });
         }
 
         let tokenData = { _id: user._id, email: user.email };
