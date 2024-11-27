@@ -67,11 +67,21 @@ const markNotificationAsRead = async (req, res) => {
 const markAllNotificationsAsRead = async (req, res) => {
     try {
         const userId = req.user.id;
+        console.log('Marking all notifications as read for user:', userId);
+
         const notifications = db.collection('notifications');
+
+        // Find notifications before update
+        const beforeUpdate = await notifications.find({
+            userId: new Types.ObjectId(userId),
+            status: 'unread'
+        }).toArray();
+        console.log('Unread notifications before update:', beforeUpdate);
 
         const result = await notifications.updateMany(
             {
-                userId: new Types.ObjectId(userId)
+                userId: new Types.ObjectId(userId),
+                status: 'unread'
             },
             {
                 $set: {
@@ -81,9 +91,22 @@ const markAllNotificationsAsRead = async (req, res) => {
             }
         );
 
+        // Find notifications after update
+        const afterUpdate = await notifications.find({
+            userId: new Types.ObjectId(userId)
+        }).toArray();
+        console.log('Notifications after update:', afterUpdate);
+
+        console.log('Update Result:', {
+            matchedCount: result.matchedCount,
+            modifiedCount: result.modifiedCount
+        });
+
         res.status(200).json({
             status: true,
-            message: `${result.modifiedCount} notifications marked as read`
+            message: `${result.modifiedCount} notifications marked as read`,
+            matchedCount: result.matchedCount,
+            modifiedCount: result.modifiedCount
         });
     } catch (error) {
         console.error('Error marking all notifications as read:', error);
