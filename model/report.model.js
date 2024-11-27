@@ -21,17 +21,9 @@ const reportSchema = new Schema({
         type: String,
         required: true
     },
-    otherVictimType: {
-        type: String,
-        required: false
-    },
     gradeYearLevel: {
         type: String,
         required: true
-    },
-    otherGradeYearLevel: {
-        type: String,
-        required: false
     },
     hasReportedBefore: {
         type: String,
@@ -77,17 +69,9 @@ const reportSchema = new Schema({
         type: String,
         required: true
     },
-    otherPerpetratorRole: {
-        type: String,
-        required: false
-    },
     perpetratorGradeYearLevel: {
         type: String,
         required: true
-    },
-    otherPerpetratorGradeYearLevel: {
-        type: String,
-        required: false
     },
     supportTypes: {
         type: [String],
