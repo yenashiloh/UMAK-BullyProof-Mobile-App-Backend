@@ -83,7 +83,7 @@ const reportSchema = new Schema({
     },
     actionsTaken: {
         type: String,
-        required: true
+        required: false
     },
     describeActions: {
         type: String,
