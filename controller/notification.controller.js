@@ -66,36 +66,36 @@ const markNotificationAsRead = async (req, res) => {
 
 const markAllNotificationsAsRead = async (req, res) => {
     try {
-        const userId = req.user.id;
-        console.log('Marking all notifications as read for user:', userId);
+        // Log the full user object to see what's available
+        console.log('Full req.user object:', req.user);
+
+        // Verify exactly how the user ID is being extracted
+        const userId = req.user.id || req.user._id || req.user.userId;
+        console.log('Extracted User ID:', userId);
+
+        // Convert to string and ObjectId to ensure correct type
+        const userObjectId = new Types.ObjectId(userId.toString());
+        console.log('Converted User ObjectId:', userObjectId);
 
         const notifications = db.collection('notifications');
 
-        // Find notifications before update
-        const beforeUpdate = await notifications.find({
-            userId: new Types.ObjectId(userId),
+        // Log the exact query conditions
+        const query = {
+            userId: userObjectId,
             status: 'unread'
-        }).toArray();
-        console.log('Unread notifications before update:', beforeUpdate);
+        };
+        console.log('Query Conditions:', query);
 
-        const result = await notifications.updateMany(
-            {
-                userId: new Types.ObjectId(userId),
-                status: 'unread'
-            },
-            {
-                $set: {
-                    status: 'read',
-                    readAt: new Date()
-                }
+        // Find unread notifications for this user
+        const unreadNotifications = await notifications.find(query).toArray();
+        console.log('Unread Notifications Found:', unreadNotifications);
+
+        const result = await notifications.updateMany(query, {
+            $set: {
+                status: 'read',
+                readAt: new Date()
             }
-        );
-
-        // Find notifications after update
-        const afterUpdate = await notifications.find({
-            userId: new Types.ObjectId(userId)
-        }).toArray();
-        console.log('Notifications after update:', afterUpdate);
+        });
 
         console.log('Update Result:', {
             matchedCount: result.matchedCount,
@@ -106,14 +106,15 @@ const markAllNotificationsAsRead = async (req, res) => {
             status: true,
             message: `${result.modifiedCount} notifications marked as read`,
             matchedCount: result.matchedCount,
-            modifiedCount: result.modifiedCount
+            modifiedCount: result.modifiedCount,
+            unreadNotificationsCount: unreadNotifications.length
         });
     } catch (error) {
-        console.error('Error marking all notifications as read:', error);
+        console.error('Error in markAllNotificationsAsRead:', error);
         res.status(500).json({
             status: false,
             message: 'Error marking all notifications as read',
-            error: error.message
+            error: error.toString()
         });
     }
 };
