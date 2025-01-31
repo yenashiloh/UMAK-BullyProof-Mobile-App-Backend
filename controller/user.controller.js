@@ -28,6 +28,13 @@ exports.login = async (req, res, next) => {
             return res.status(404).json({ status: false, message: "User doesn't exist" });
         }
 
+        if (!user.isEmailVerified) {
+            return res.status(403).json({ 
+                status: false, 
+                message: "Please verify your email before logging in" 
+            });
+        }
+
         const isMatch = await user.comparePassword(password);
 
         if (!isMatch) {
@@ -46,7 +53,57 @@ exports.login = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-};
+}
+
+exports.verifyEmail = async (req, res, next) => {
+    try {
+        const { token } = req.query;
+
+        const user = await UserService.verifyEmail(token);
+
+        res.status(200).json({ 
+            status: true, 
+            message: "Email verified successfully. You can now log in." 
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+exports.resendVerificationEmail = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        const user = await UserService.checkuser(email);
+
+        if (!user) {
+            return res.status(404).json({ status: false, message: "User not found" });
+        }
+
+        if (user.isEmailVerified) {
+            return res.status(400).json({ status: false, message: "Email already verified" });
+        }
+
+        // Generate new token
+        const emailVerificationToken = crypto.randomBytes(32).toString('hex');
+        const emailVerificationTokenExpires = new Date(Date.now() + 3600000);
+
+        user.emailVerificationToken = emailVerificationToken;
+        user.emailVerificationTokenExpires = emailVerificationTokenExpires;
+
+        await user.save();
+
+        // Resend verification email
+        await UserService.sendVerificationEmail(email, emailVerificationToken);
+
+        res.status(200).json({ 
+            status: true, 
+            message: "Verification email resent. Please check your inbox." 
+        });
+    } catch (error) {
+        next(error);
+    }
+}
 
 
 exports.getUserById = async (req, res, next) => {
@@ -65,5 +122,5 @@ exports.getUserById = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
-};
+}
 
