@@ -30,18 +30,30 @@ const userSchema = new Schema({
     status: {
         type: String,
         default: 'Active Account'
+    },
+    isEmailVerified: {
+        type: Boolean,
+        default: false
+    },
+    emailVerificationToken: {
+        type: String
+    },
+    emailVerificationTokenExpires: {
+        type: Date
     }
 });
 
-userSchema.pre('save', async function () {
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) {
+        return next();
+    }
+    
     try {
-        var user = this;
-        const salt = await (bcrypt.genSalt(10));
-        const hashpass = await bcrypt.hash(user.password, salt);
-
-        user.password = hashpass;
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
     } catch (error) {
-        throw error;
+        next(error);
     }
 });
 
