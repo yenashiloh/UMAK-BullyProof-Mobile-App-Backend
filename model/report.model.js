@@ -5,6 +5,10 @@ const moment = require('moment-timezone');
 const { Schema } = mongoose;
 
 const reportSchema = new Schema({
+    submitAs: {
+        type: String,
+        required: true
+    },
     victimRelationship: {
         type: String,
         required: true
@@ -15,15 +19,15 @@ const reportSchema = new Schema({
     },
     victimName: {
         type: String,
-        required: true
+        required: false
     },
     victimType: {
         type: String,
-        required: true
+        required: false
     },
     gradeYearLevel: {
         type: String,
-        required: true
+        required: false
     },
     hasReportedBefore: {
         type: String,
@@ -31,11 +35,11 @@ const reportSchema = new Schema({
     },
     departmentCollege: {
         type: String,
-        required: false
+        required: true
     },
     reportedTo: {
         type: String,
-        required: false
+        required: true
     },
     platformUsed: {
         type: [String],
@@ -43,11 +47,15 @@ const reportSchema = new Schema({
     },
     otherPlatformUsed: {
         type: String,
-        required: false
+        required: true
+    },
+    cyberbullyingTypes: {
+        type: [String],
+        required: true
     },
     hasWitness: {
         type: String,
-        required: true
+        required: false
     },
     witnessInfo: {
         type: String,
@@ -79,15 +87,23 @@ const reportSchema = new Schema({
     },
     otherSupportTypes: {
         type: String,
-        required: false
+        required: true
+    },
+    witnessChoice: {
+        type: String,
+        required: true
+    },
+    contactChoice: {
+        type: String,
+        required: true
     },
     actionsTaken: {
         type: String,
-        required: false
+        required: true
     },
     describeActions: {
         type: String,
-        required: false
+        required: true
     },
     reportedBy: {
         type: mongoose.Schema.Types.ObjectId,

@@ -66,27 +66,22 @@ const markNotificationAsRead = async (req, res) => {
 
 const markAllNotificationsAsRead = async (req, res) => {
     try {
-        // Log the full user object to see what's available
         console.log('Full req.user object:', req.user);
 
-        // Verify exactly how the user ID is being extracted
         const userId = req.user.id || req.user._id || req.user.userId;
         console.log('Extracted User ID:', userId);
 
-        // Convert to string and ObjectId to ensure correct type
         const userObjectId = new Types.ObjectId(userId.toString());
         console.log('Converted User ObjectId:', userObjectId);
 
         const notifications = db.collection('notifications');
 
-        // Log the exact query conditions
         const query = {
             userId: userObjectId,
             status: 'unread'
         };
         console.log('Query Conditions:', query);
 
-        // Find unread notifications for this user
         const unreadNotifications = await notifications.find(query).toArray();
         console.log('Unread Notifications Found:', unreadNotifications);
 
