@@ -1,4 +1,6 @@
+// services/user.services.js
 const UserModel = require('../model/user.model');
+const AuditTrailModel = require('../model/auditTrail.model'); // Import AuditTrail model
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
@@ -24,6 +26,14 @@ class UserService {
         });
 
         const user = await createUser.save();
+
+        // Log audit trail for account creation
+        await AuditTrailModel.create({
+            userId: user._id,
+            action: 'ACCOUNT_CREATED',
+            details: { email, fullname, type, position, idnumber }
+        });
+
         await this.sendVerificationEmail(email, emailVerificationToken);
         return user;
     }
@@ -82,7 +92,6 @@ class UserService {
 
             const result = await transporter.sendMail(mailOptions);
             return result;
-
         } catch (error) {
             console.error('Email sending error:', error);
             throw new Error('Failed to send verification email');
@@ -129,6 +138,14 @@ class UserService {
             if (!updatedUser) {
                 throw new Error('User not found');
             }
+
+            // Log audit trail for profile update
+            await AuditTrailModel.create({
+                userId: userId,
+                action: 'PROFILE_UPDATED',
+                details: updates
+            });
+
             return updatedUser;
         } catch (error) {
             throw error;
@@ -246,6 +263,14 @@ class UserService {
         user.resetPasswordExpires = undefined;
 
         await user.save();
+
+        // Log audit trail for password reset
+        await AuditTrailModel.create({
+            userId: userId,
+            action: 'PASSWORD_RESET',
+            details: { email: user.email }
+        });
+
         console.log('Password updated in DB for userId:', userId);
         return user;
     }

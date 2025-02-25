@@ -1,4 +1,6 @@
+// controller/user.controller.js
 const UserService = require("../services/user.services");
+const AuditTrailModel = require('../model/auditTrail.model'); // Import AuditTrail model
 const crypto = require('crypto');
 const moment = require('moment-timezone');
 const jwt = require('jsonwebtoken');
@@ -51,6 +53,13 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ status: false, message: "Your account has been disabled due to certain reasons. Please contact CSFD for assistance" });
         }
 
+        // Log audit trail for login
+        await AuditTrailModel.create({
+            userId: user._id,
+            action: 'LOGIN',
+            details: { email, ip: req.ip } // Optional: log IP address
+        });
+
         let tokenData = { _id: user._id, email: user.email, fullname: user.fullname };
 
         const token = await UserService.generateAccessToken(tokenData, process.env.JWT_SECRET, process.env.JWT_EXPIRE);
@@ -67,12 +76,153 @@ exports.verifyEmail = async (req, res, next) => {
 
         const user = await UserService.verifyEmail(token);
 
-        res.status(200).json({
-            status: true,
-            message: "Email verified successfully. You can now log in."
-        });
+        res.status(200).send(`
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Email Verified - BullyProof</title>
+                <style>
+                    * {
+                        margin: 0;
+                        padding: 0;
+                        box-sizing: border-box;
+                        font-family: 'Arial', sans-serif;
+                    }
+                    body {
+                        min-height: 100vh;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+                        color: #ffffff;
+                        line-height: 1.6;
+                    }
+                    .container {
+                        background: rgba(255, 255, 255, 0.95);
+                        border-radius: 15px;
+                        padding: 40px;
+                        max-width: 500px;
+                        width: 90%;
+                        text-align: center;
+                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                        animation: fadeIn 0.5s ease-in-out;
+                    }
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: translateY(-20px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                    .icon {
+                        font-size: 60px;
+                        color: #22C55E;
+                        margin-bottom: 20px;
+                    }
+                    h1 {
+                        color: #1E3A8A;
+                        font-size: 28px;
+                        margin-bottom: 15px;
+                    }
+                    p {
+                        color: #666;
+                        font-size: 16px;
+                        margin-bottom: 30px;
+                    }
+                    .footer {
+                        margin-top: 30px;
+                        color: #999;
+                        font-size: 12px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="icon">✓</div>
+                    <h1>Email Verified Successfully!</h1>
+                    <p>Your email has been successfully verified. You can now log in to the University of Makati - BullyProof application and start using all features.</p>
+                    <div class="footer">
+                        University of Makati - BullyProof | © ${new Date().getFullYear()}
+                    </div>
+                </div>
+            </body>
+            </html>
+        `);
     } catch (error) {
-        next(error);
+        if (error.message === 'Invalid or expired token') {
+            res.status(400).send(`
+                <!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Invalid Token - BullyProof</title>
+                    <style>
+                        * {
+                            margin: 0;
+                            padding: 0;
+                            box-sizing: border-box;
+                            font-family: 'Arial', sans-serif;
+                        }
+                        body {
+                            min-height: 100vh;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
+                            color: #ffffff;
+                            line-height: 1.6;
+                        }
+                        .container {
+                            background: rgba(255, 255, 255, 0.95);
+                            border-radius: 15px;
+                            padding: 40px;
+                            max-width: 500px;
+                            width: 90%;
+                            text-align: center;
+                            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                            animation: fadeIn 0.5s ease-in-out;
+                        }
+                        @keyframes fadeIn {
+                            from { opacity: 0; transform: translateY(-20px); }
+                            to { opacity: 1; transform: translateY(0); }
+                        }
+                        .icon {
+                            font-size: 60px;
+                            color: #EF4444;
+                            margin-bottom: 20px;
+                        }
+                        h1 {
+                            color: #1E3A8A;
+                            font-size: 28px;
+                            margin-bottom: 15px;
+                        }
+                        p {
+                            color: #666;
+                            font-size: 16px;
+                            margin-bottom: 30px;
+                        }
+                        .footer {
+                            margin-top: 30px;
+                            color: #999;
+                            font-size: 12px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="icon">✗</div>
+                        <h1>Invalid or Expired Token</h1>
+                        <p>The email verification link is either invalid or has expired. Please request a new verification email from the login page.</p>
+                        <div class="footer">
+                            University of Makati - BullyProof | © ${new Date().getFullYear()}
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+        } else {
+            next(error); // Pass other errors to the error handler
+        }
     }
 };
 
@@ -230,6 +380,13 @@ exports.changePassword = async (req, res, next) => {
 
         user.password = newPassword;
         await user.save();
+
+        // Log audit trail for password change
+        await AuditTrailModel.create({
+            userId: userId,
+            action: 'PASSWORD_CHANGED',
+            details: { email: user.email }
+        });
 
         console.log('Password updated successfully for user:', userId);
         res.status(200).json({
