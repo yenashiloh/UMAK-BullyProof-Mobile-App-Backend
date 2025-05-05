@@ -9,5 +9,5 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Server Listening on Port http://192.168.1.17:3000`);
+    console.log(`Server Listening on Port http://localhost:3000`);
 });

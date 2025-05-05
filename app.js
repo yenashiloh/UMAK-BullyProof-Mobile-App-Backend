@@ -1,11 +1,14 @@
 require('dotenv').config();
 const express = require('express');
-const body_parser = require('body-parser');
 const cors = require('cors');
+const body_parser = require('body-parser');
+const path = require('path');
+
 const userRouter = require('./routers/user.router');
 const reportRouter = require('./routers/report.router');
 const notificationRouter = require('./routers/notification.router');
-const path = require('path');
+const cardsRouter = require('./routers/cards.router');
+const formRouter = require('./routers/form.router');
 
 const app = express();
 
@@ -19,10 +22,10 @@ app.use(body_parser.json({ limit: MAX_REQUEST_SIZE }));
 app.use(body_parser.urlencoded({ limit: MAX_REQUEST_SIZE, extended: true }));
 
 app.use('/', userRouter);
-
 app.use('/reports', reportRouter);
-
 app.use('/notifications', notificationRouter);
+app.use('/cards', cardsRouter);
+app.use('/forms', formRouter);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
