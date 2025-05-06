@@ -53,6 +53,7 @@ exports.getFormById = async (req, res, next) => {
     }
 };
 
+// Modified controller/form.controller.js
 exports.submitForm = async (req, res, next) => {
     try {
         const formData = req.body;
@@ -75,41 +76,24 @@ exports.submitForm = async (req, res, next) => {
         if (stepsData) {
             for (const stepId in stepsData) {
                 const stepData = stepsData[stepId];
-                
+
                 for (const elementId in stepData) {
                     const elementValue = stepData[elementId];
-                    
+
                     // Check if the value is a file upload array
-                    if (Array.isArray(elementValue) && 
-                        elementValue.length > 0 && 
+                    if (Array.isArray(elementValue) &&
+                        elementValue.length > 0 &&
                         elementValue[0].hasOwnProperty('fileContent')) {
-                        
-                        // Process each file
-                        const processedFiles = [];
-                        
+
+                        // Just keep the base64 content as is, no need to decode
+                        // We'll just add a flag to indicate we're storing base64
                         for (const fileData of elementValue) {
-                            // Save file to disk or database
-                            // Here you'd typically:
-                            // 1. Decode the base64 string to binary
-                            // 2. Save to disk or cloud storage
-                            // 3. Store the file path or ID
-                            
-                            // For example, to save to disk:
-                            const fileBuffer = Buffer.from(fileData.fileContent, 'base64');
-                            const filePath = path.join('uploads', fileData.fileName);
-                            fs.writeFileSync(filePath, fileBuffer);
-                            
-                            // For simplicity in this example, we'll just keep track of file metadata
-                            processedFiles.push({
-                                fileName: fileData.fileName,
-                                fileSize: fileData.fileSize,
-                                fileType: fileData.fileType,
-                                fileContent: fileData.fileContent, // Uncomment if you want to keep the content
-                            });
+                            // Add a flag to indicate this is base64 data
+                            fileData.isBase64 = true;
+
+                            // Optionally, we can add a timestamp to track when it was uploaded
+                            fileData.uploadedAt = new Date().toISOString();
                         }
-                        
-                        // Replace the original array with processed files
-                        stepData[elementId] = processedFiles;
                     }
                 }
             }
@@ -133,4 +117,4 @@ exports.submitForm = async (req, res, next) => {
             error: error.message
         });
     }
-}
+};
