@@ -26,6 +26,7 @@ app.use('/reports', reportRouter);
 app.use('/notifications', notificationRouter);
 app.use('/cards', cardsRouter);
 app.use('/forms', formRouter);
+app.use('/form-elements', require('./routers/form_elements.router'));
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

@@ -13,4 +13,6 @@ router.get('/', FormController.getForms);
 // Get a specific form by ID
 router.get('/:formId', FormController.getFormById);
 
+router.post('/submit', FormController.submitForm);
+
 module.exports = router;
